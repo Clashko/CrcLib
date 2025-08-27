@@ -42,14 +42,17 @@ catch (Exception ex)
 // --- Part 2: File CRC Demo ---
 Console.WriteLine("\n2. File CRC Calculation");
 
+string filePath;
 if (args.Length == 0)
 {
-    Console.WriteLine("   No file path provided.");
-    Console.WriteLine("   Usage: dotnet run --project CrcLib.Demo <path_to_your_file>");
-    return;
+    Console.WriteLine("   No file path provided, using default 'inputFile.txt'.");
+    filePath = "CrcLib.Demo/inputFile.txt";
+}
+else
+{
+    filePath = args[0];
 }
 
-string filePath = args[0];
 if (!File.Exists(filePath))
 {
     Console.WriteLine($"   Error: File not found at '{filePath}'");
@@ -62,17 +65,26 @@ try
 {
     Console.WriteLine($"   Calculating CRC for file: {filePath}");
 
-    // Perform calculation
-    uint fileCrcUint = await fileService.ComputeCrcAsync(filePath);
-    string fileCrcHex = await fileService.ComputeCrcHexAsync(filePath);
+    // --- Calculation with Progress Reporting ---
+    Console.WriteLine("\n   --- With Progress Reporting ---");
+    var progress = new Progress<double>(p =>
+    {
+        Console.Write($"\r   Progress: {p:F2}%   ");
+    });
 
-    Console.WriteLine($"   CRC (uint):  {fileCrcUint}");
+    string fileCrcHexWithProgress = await fileService.ComputeCrcHexAsync(filePath, progress);
+    Console.WriteLine("\n   CRC (hex):   {0}", fileCrcHexWithProgress);
+
+    // --- Standard Calculation (for comparison) ---
+    Console.WriteLine("\n   --- Without Progress Reporting ---");
+    string fileCrcHex = await fileService.ComputeCrcHexAsync(filePath);
     Console.WriteLine($"   CRC (hex):   {fileCrcHex}");
 
     // Verification Demo
-    bool isFileValid = await fileService.VerifyCrcAsync(filePath, fileCrcUint);
-    Console.WriteLine($"   Verification check: {isFileValid}");
+    bool isFileValid = await fileService.VerifyCrcAsync(filePath, fileCrcHexWithProgress);
+    Console.WriteLine($"\n   Verification check: {isFileValid}");
 }
+
 catch (Exception ex)
 {
     Console.WriteLine($"   An error occurred during file demo: {ex.Message}");

@@ -1,1 +1,2 @@
-Hello, World!
+This is a test file for the CrcLib.Demo application.
+It is used to demonstrate the CRC-32 calculation with progress reporting.

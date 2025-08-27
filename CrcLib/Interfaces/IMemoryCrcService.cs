@@ -13,11 +13,27 @@ namespace CrcLib.Interfaces
         Task<uint> ComputeCrcAsync(byte[] data);
 
         /// <summary>
+        /// Computes the CRC-32 checksum for a byte array with progress reporting.
+        /// </summary>
+        /// <param name="data">The byte array to compute the checksum for.</param>
+        /// <param name="progress">The progress reporter.</param>
+        /// <returns>The CRC-32 checksum as a uint.</returns>
+        Task<uint> ComputeCrcAsync(byte[] data, IProgress<double> progress);
+
+        /// <summary>
         /// Computes the CRC-32 checksum for a byte array.
         /// </summary>
         /// <param name="data">The byte array to compute the checksum for.</param>
         /// <returns>The CRC-32 checksum as a lowercase hex string (e.g., "0123abcd").</returns>
         Task<string> ComputeCrcHexAsync(byte[] data);
+
+        /// <summary>
+        /// Computes the CRC-32 checksum for a byte array with progress reporting.
+        /// </summary>
+        /// <param name="data">The byte array to compute the checksum for.</param>
+        /// <param name="progress">The progress reporter.</param>
+        /// <returns>The CRC-32 checksum as a lowercase hex string (e.g., "0123abcd").</returns>
+        Task<string> ComputeCrcHexAsync(byte[] data, IProgress<double> progress);
 
         /// <summary>
         /// Verifies the CRC-32 checksum of a byte array against an expected value.
@@ -43,11 +59,27 @@ namespace CrcLib.Interfaces
         Task<uint> ComputeCrcAsync(Stream stream);
 
         /// <summary>
+        /// Computes the CRC-32 checksum for a stream with progress reporting.
+        /// </summary>
+        /// <param name="stream">The stream to compute the checksum for.</param>
+        /// <param name="progress">The progress reporter.</param>
+        /// <returns>The CRC-32 checksum as a uint.</returns>
+        Task<uint> ComputeCrcAsync(Stream stream, IProgress<double>? progress);
+
+        /// <summary>
         /// Computes the CRC-32 checksum for a stream.
         /// </summary>
         /// <param name="stream">The stream to compute the checksum for.</param>
         /// <returns>The CRC-32 checksum as a lowercase hex string (e.g., "0123abcd").</returns>
         Task<string> ComputeCrcHexAsync(Stream stream);
+
+        /// <summary>
+        /// Computes the CRC-32 checksum for a stream with progress reporting.
+        /// </summary>
+        /// <param name="stream">The stream to compute the checksum for.</param>
+        /// <param name="progress">The progress reporter.</param>
+        /// <returns>The CRC-32 checksum as a lowercase hex string (e.g., "0123abcd").</returns>
+        Task<string> ComputeCrcHexAsync(Stream stream, IProgress<double> progress);
 
         /// <summary>
         /// Verifies the CRC-32 checksum of a stream against an expected value.

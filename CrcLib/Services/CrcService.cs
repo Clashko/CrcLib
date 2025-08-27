@@ -12,6 +12,12 @@ namespace CrcLib.Services
         /// <inheritdoc />
         public Task<uint> ComputeCrcAsync(string filePath)
         {
+            return ComputeCrcAsync(filePath, null);
+        }
+
+        /// <inheritdoc />
+        public Task<uint> ComputeCrcAsync(string filePath, IProgress<double>? progress)
+        {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentNullException(nameof(filePath));
 
@@ -22,15 +28,21 @@ namespace CrcLib.Services
             {
                 using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, false))
                 {
-                    return CrcCalculator.ComputeCorporateCrc32(fileStream);
+                    return CrcCalculator.ComputeCorporateCrc32(fileStream, progress);
                 }
             });
         }
 
         /// <inheritdoc />
-        public async Task<string> ComputeCrcHexAsync(string filePath)
+        public Task<string> ComputeCrcHexAsync(string filePath)
         {
-            uint crc = await ComputeCrcAsync(filePath);
+            return ComputeCrcHexAsync(filePath, null);
+        }
+
+        /// <inheritdoc />
+        public async Task<string> ComputeCrcHexAsync(string filePath, IProgress<double>? progress)
+        {
+            uint crc = await ComputeCrcAsync(filePath, progress);
             return crc.ToString("x8");
         }
 

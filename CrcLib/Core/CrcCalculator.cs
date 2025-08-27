@@ -7,6 +7,11 @@ namespace CrcLib.Core
     {
         public static uint ComputeCorporateCrc32(Stream stream)
         {
+            return ComputeCorporateCrc32(stream, null);
+        }
+
+        public static uint ComputeCorporateCrc32(Stream stream, IProgress<double>? progress)
+        {
             long crc32 = 0;
 
             // This implementation is based on the user-provided corporate standard.
@@ -43,7 +48,9 @@ namespace CrcLib.Core
                     ComputeCrc32(out crc32, crc32, r1, r1.Length, 2);
                     Array.Clear(r1, 0, r1.Length);
                 }
+                progress?.Report((double)s / l * 100);
             }
+            progress?.Report(100.0);
             stream.Seek(0, SeekOrigin.Begin);
             return (uint)crc32;
         }
