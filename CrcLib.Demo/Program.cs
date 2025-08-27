@@ -1,12 +1,23 @@
-using CrcLib.Services;
-using System;
-using System.IO;
+using CrcLib.Extensions;
+using CrcLib.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Text;
-using System.Threading.Tasks;
 
-// Note: For a real application, you would use Dependency Injection.
-// For this simple demo, we are instantiating services directly.
-// See the README.md for DI examples.
+// Setup Dependency Injection and Logging
+var serviceProvider = new ServiceCollection()
+    .AddLogging(builder =>
+    {
+        builder.AddConsole();
+        builder.SetMinimumLevel(LogLevel.Information);
+    })
+    .AddCrcService() // From CrcLib.Extensions
+    .AddMemoryCrcService() // From CrcLib.Extensions
+    .BuildServiceProvider();
+
+var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+logger.LogInformation("CrcLib Demo Application Starting...");
 
 Console.WriteLine("CrcLib Demo Application");
 Console.WriteLine("-----------------------");
@@ -14,7 +25,7 @@ Console.WriteLine("-----------------------");
 // --- Part 1: In-Memory CRC Demo ---
 Console.WriteLine("\n1. In-Memory CRC Calculation");
 
-var memoryService = new MemoryCrcService();
+var memoryService = serviceProvider.GetRequiredService<IMemoryCrcService>();
 string testString = "Hello, World!";
 byte[] testData = Encoding.UTF8.GetBytes(testString);
 
@@ -35,6 +46,7 @@ try
 }
 catch (Exception ex)
 {
+    logger.LogError(ex, "An error occurred during the in-memory demo.");
     Console.WriteLine($"An error occurred during in-memory demo: {ex.Message}");
 }
 
@@ -55,11 +67,12 @@ else
 
 if (!File.Exists(filePath))
 {
+    logger.LogError("Input file not found: {FilePath}", filePath);
     Console.WriteLine($"   Error: File not found at '{filePath}'");
     return;
 }
 
-var fileService = new CrcService();
+var fileService = serviceProvider.GetRequiredService<ICrcService>();
 
 try
 {
@@ -87,5 +100,8 @@ try
 
 catch (Exception ex)
 {
+    logger.LogError(ex, "An error occurred during the file demo for file: {FilePath}", filePath);
     Console.WriteLine($"   An error occurred during file demo: {ex.Message}");
 }
+
+logger.LogInformation("CrcLib Demo Application Finished.");

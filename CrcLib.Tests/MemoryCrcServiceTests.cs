@@ -1,5 +1,6 @@
 using CrcLib.Interfaces;
 using CrcLib.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Text;
 
 namespace CrcLib.Tests
@@ -16,7 +17,7 @@ namespace CrcLib.Tests
 
         public MemoryCrcServiceTests()
         {
-            _service = new MemoryCrcService();
+            _service = new MemoryCrcService(new NullLogger<MemoryCrcService>());
             _testData = Encoding.UTF8.GetBytes("Hello, World!");
         }
 
@@ -75,7 +76,7 @@ namespace CrcLib.Tests
 
         [Fact]
         public async Task VerifyCrcAsync_WithCorrectHex_ReturnsTrue()
-        {
+        { 
             // Act
             var result = await _service.VerifyCrcAsync(_testData, Known_Crc_Hex_For_Hello_World);
 
@@ -101,3 +102,4 @@ namespace CrcLib.Tests
         }
     }
 }
+

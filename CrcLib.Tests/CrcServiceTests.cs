@@ -1,5 +1,6 @@
 using CrcLib.Interfaces;
 using CrcLib.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CrcLib.Tests
 {
@@ -14,7 +15,7 @@ namespace CrcLib.Tests
 
         public CrcServiceTests()
         {
-            _service = new CrcService();
+            _service = new CrcService(new NullLogger<CrcService>());
             
             // Create a temporary file with test data
             _tempFilePath = Path.GetTempFileName();
